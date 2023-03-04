@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container his">
+      <nav>
+        <div class="item">Book Store App</div>
+        <div class="right">
+          <!-- <div class="history">History</div> -->
+          <div class="search3">Search</div>
+        </div>
+      </nav>
+      <div class="item2">
+        Your Previous Searches
+        <button class="clr">Clear Search</button>
+      </div>
+      <div class="flex2"> 
+      </div>
+      <div class="flex3"></div>
+    </div>
+  </body>
+
+  <script>
+    let Flex2 = document.querySelector(".flex2");
+    let Flex3 = document.querySelector(".flex3");
+    let Clear = document.querySelector(".clr");
+    let Search3 = document.querySelector(".search3");
+    
+
+    let arr3 = JSON.parse(localStorage.getItem("Data"));
+    console.log(arr3);
+
+    Search3.addEventListener('click',()=>{
+        window.location.href="/index.html"
+
+    })
+
+    Clear.addEventListener('click',(e)=>{
+        e.preventDefault();
+       localStorage.clear();
+       Flex2.style.display="none";
+       Flex3.style.display="none";
+
+    })
+
+
+    function Show() {
+
+        arr3.map((item)=>{
+      Flex2.innerHTML += `
+      <div class="His">
+          <div class="left">
+            <span>${item.id}.</span>
+            <span>${item.name}</span>
+          </div>
+          <div class="right">
+            <span>Searched On: ${item.date}   </span>
+            <span> at ${item.time}</span>
+          </div>
+        </div>
+        `;
+    })
+    }
+
+    Show();
+    if(arr3){
+     let His = document.querySelector(".His");
+    His.addEventListener('click',async(e)=>{
+      e.preventDefault();
+      console.log("Hello")
+
+      let response= await fetch(" https://www.googleapis.com/books/v1/volumes?q=percy+jackson) ");
+       let data=await response.json();
+       let arr=data.items;
+    //    console.log(data.items[0].volumeInfo);
+       let p=arr.map((item)=>{
+        return item.volumeInfo;
+       });
+       console.log(arr3)
+       
+       p.map((item)=>{
+        // console.log(item.imageLinks)
+        // console.log(item.title)
+       
+        
+        if(item.title.includes(arr3[0].name ||arr3[1].name ||arr3[2].name)== true){
+            // Flex.style.visibility="visible";   
+        Flex3.innerHTML+=`
+        <div class="product">
+                <div class="image">
+                     <img src="${item.imageLinks.thumbnail}" >
+                </div>
+                <div class="title margin">Title : ${item.title}</div>
+                <div class="author margin">Author: ${item.authors }</div>
+                <div class="page-count margin">Page Count: ${item.pageCount}</div>
+                <div class="publisher margin">Publisher: ${item.publisher}</div>
+                <div class="itn">
+                <button class="btn2">Buy Now</button>
+            </div>
+
+            </div>
+        `
+        }
+    })
+
+    })
+}
+  </script>
+</html>

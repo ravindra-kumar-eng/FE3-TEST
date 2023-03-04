@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="item">
+                Book Store App
+            </div>
+            <div class="right">
+                <div class="history">History</div>
+                <div class="search2">Search</div>
+            </div>
+        </nav>
+        <div class="item2">
+            Search For Books By Their Name
+        </div>
+        <div class="input">
+            <i class="fa fa-search"></i>
+            <input type="text" placeholder="Search..." class="search" >
+            
+        </div>
+        <div class="button">
+            <button>Search Now!</button>
+        </div>
+        <div class="result">
+           
+        </div>
+        <div class="flex">
+            
+        </div>
+    </div>
+    
+</body>
+<script>
+    var search=document.querySelector(".search");
+    
+    let button=document.querySelector(".button");
+    let Flex=document.querySelector(".flex");
+    let Result=document.querySelector(".result");
+    let Search2=document.querySelector(".search2");
+    let History=document.querySelector(".history");
+    Search2.addEventListener('click',()=>{
+        window.location.href="/index.html"
+
+    })
+    
+    History.addEventListener('click',()=>{
+        window.location.href="/history.html"
+
+    })
+
+
+
+    var arr2=[];
+
+
+    let id=1;
+    let Currdate=new Date();
+    let date=Currdate.getDate();
+    let month=Currdate.getMonth()+1;
+    let year=Currdate.getFullYear();
+    var DATE=`${date}-${month}-${year}`
+
+    let hour=Currdate.getHours();
+    let minute=Currdate.getMinutes();
+    let amPm=hour>=12?'PM':'AM';
+
+    hour=hour%12;
+    hour=hour?hour:12;
+    let time=`${hour}:${minute<10?'0'+minute:minute}${amPm}`;
+    
+
+
+    button.addEventListener("click",display);
+
+     async function display(e){
+        e.preventDefault();
+        Flex.style.visibility="hidden";
+       console.log(DATE);
+
+        
+
+       let response= await fetch(" https://www.googleapis.com/books/v1/volumes?q=percy+jackson) ");
+       let data=await response.json();
+       let arr=data.items;
+    //    console.log(data.items[0].volumeInfo);
+       let p=arr.map((item)=>{
+        return item.volumeInfo;
+       });
+       let searchValue=search.value;
+
+       Result.innerHTML=`Book Results For '${searchValue}'`
+
+       let obj={id:id, name:searchValue,time:time,date:DATE};
+    //    console.log(obj);
+       arr2.push(obj);
+       console.log(arr2);
+       localStorage.setItem('Data',JSON.stringify(arr2));
+       
+       console.log(p);
+       p.map((item)=>{
+        // console.log(item.imageLinks)
+        // console.log(item.title)
+       
+        console.log(searchValue)
+        if(item.title.includes(searchValue)== true){
+            Flex.style.visibility="visible";   
+        Flex.innerHTML+=`
+        <div class="product">
+                <div class="image">
+                    // <img src="${item.imageLinks.thumbnail}" >
+                </div>
+                <div class="title margin">Title : ${item.title}</div>
+                <div class="author margin">Author: ${item.authors }</div>
+                <div class="page-count margin">Page Count: ${item.pageCount}</div>
+                <div class="publisher margin">Publisher: ${item.publisher}</div>
+                <div class="itn">
+                <button class="btn2">Buy Now</button>
+            </div>
+
+            </div>
+        `
+        }
+    })
+
+  id++;
+
+
+    }
+   
+    
+</script>
+</html>
