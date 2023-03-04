@@ -36,8 +36,9 @@
     let arr3 = JSON.parse(localStorage.getItem("Data"));
     console.log(arr3);
 
-    Search3.addEventListener('click',()=>{
-        window.location.href="./index.html"
+    Search3.addEventListener('click',(e)=>{
+         e.preventDefault();
+        window.location.href = "./index.html";
 
     })
 
